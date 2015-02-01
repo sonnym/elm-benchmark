@@ -1,7 +1,11 @@
 module Benchmark(benchmark) where
 
+import List
 import Time (..)
 import Signal (..)
+
+import Signal.Extra ((~>))
+import Signal.Time (startTime)
 
 benchmark : String -> Int -> (a -> b) -> Signal String
 benchmark label ops fn = map (fmt label) (timer ops fn)
@@ -26,12 +30,5 @@ fmt : String -> (Time, Time) -> String
 fmt label result = label ++ ": " ++ (toString result)
 
 -- "borrowed" from Apanatshka/elm-signal-extra
-startTime : Signal Time
-startTime = constant () |> timestamps
-
 timestamps : Signal a -> Signal Time
 timestamps s = timestamp s ~> fst
-
-(~>) : Signal a -> (a -> b) -> Signal b
-(~>) = flip map
-infixl 4 ~>
