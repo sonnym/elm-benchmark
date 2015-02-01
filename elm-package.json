@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "summary": "Simple library for benchmarking functions.",
+  "repository": "https://github.com/sonnym/elm-benchmark.git",
+  "license": "MIT",
+  "source-directories": [
+      "."
+    ],
+  "exposed-modules": [
+    "Benchmark"
+  ],
+  "dependencies": {
+    "elm-lang/core": "1.0.0 <= v < 2.0.0",
+    "Apanatshka/elm-signal-extra": "3.2.1 <= v <= 3.2.1"
+  }
+}
