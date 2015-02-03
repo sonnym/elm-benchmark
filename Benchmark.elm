@@ -6,8 +6,8 @@ import Signal (..)
 
 import Signal.Extra ((~>))
 
-benchmark : String -> Int -> (a -> b) -> Signal String
-benchmark label ops fn = map (fmt label) (timer ops fn)
+benchmark : Int -> (a -> b) -> Signal (Time, Time)
+benchmark ops fn = timer ops fn
 
 timer : Int -> (a -> b) -> Signal (Time, Time)
 timer ops fn=
