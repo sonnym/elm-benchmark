@@ -10,7 +10,7 @@ benchmark : Int -> (a -> b) -> Signal (Time, Time)
 benchmark ops fn = timer ops fn
 
 timer : Int -> (a -> b) -> Signal (Time, Time)
-timer ops fn=
+timer ops fn =
   map2 (,)
     (initSignal (every millisecond))
     (timestamps (timestamp (keepIf (identity) False (runFn ops fn))))
