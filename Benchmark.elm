@@ -6,8 +6,8 @@ import Signal (..)
 
 import Signal.Extra ((~>))
 
-benchmark : Int -> (a -> b) -> Signal (Time, Time)
-benchmark ops fn = timer ops fn
+benchmark : Int -> List (a -> b) -> List (Signal (Time,Time))
+benchmark ops fns = List.map (timer ops) fns
 
 timer : Int -> (a -> b) -> Signal (Time, Time)
 timer ops fn =
