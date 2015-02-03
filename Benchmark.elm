@@ -1,10 +1,21 @@
-module Benchmark(benchmark) where
+module Benchmark(benchmark, benchmarkFmt) where
 
 import List
+import List ((::))
 import Time (..)
 import Signal (..)
 
-import Signal.Extra ((~>))
+import Html (..)
+import Signal.Extra ((~>), mapMany)
+
+benchmarkFmt : Int -> List (a -> b) -> Signal Html
+benchmarkFmt ops fns =
+  let
+    results = benchmark ops fns
+  in
+    mapMany
+      (\rows -> table [] [tblHead, tbody [] rows])
+      (List.map (map (tblRow ops)) results)
 
 benchmark : Int -> List (a -> b) -> List (Signal (Time,Time))
 benchmark ops fns = List.map (timer ops) fns
@@ -25,8 +36,26 @@ runFn ops fn =
         True)
     (constant ())
 
-fmt : String -> (Time, Time) -> String
-fmt label result = label ++ ": " ++ (toString result)
+tblHead : Html
+tblHead =
+  thead []
+    [ tr []
+      [ th [] [text "Start"]
+      , th [] [text "Finish"]
+      , th [] [text "Average"]
+      ]
+    ]
+
+tblRow : Int -> (Time, Time) -> Html
+tblRow ops (start, finish) =
+  let
+    avg = (finish - start) / (toFloat ops)
+  in
+    tr []
+      [ td [] [text (toString start)]
+      , td [] [text (toString finish)]
+      , td [] [text ((toString avg) ++ "ms")]
+      ]
 
 -- "borrowed" from Apanatshka/elm-signal-extra
 timestamps : Signal a -> Signal Time
