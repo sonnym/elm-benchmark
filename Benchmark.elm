@@ -6,16 +6,17 @@ import Time (..)
 import Signal (..)
 
 import Html (..)
-import Signal.Extra ((~>), mapMany)
+import Signal.Extra ((~>), mapMany, zip)
 
-benchmarkFmt : Int -> List (a -> b) -> Signal Html
-benchmarkFmt ops fns =
+benchmarkFmt : Int -> List (String, (a -> b)) -> Signal Html
+benchmarkFmt ops labeledFns =
   let
-    results = benchmark ops fns
+    labels = List.map (fst >> constant) labeledFns
+    results = benchmark ops (List.map snd labeledFns)
   in
     mapMany
       (\rows -> table [] [tblHead, tbody [] rows])
-      (List.map (map (tblRow ops)) results)
+      (List.map2 (map2 (tblRow ops)) labels results)
 
 benchmark : Int -> List (a -> b) -> List (Signal (Time,Time))
 benchmark ops fns = List.map (timer ops) fns
@@ -40,19 +41,21 @@ tblHead : Html
 tblHead =
   thead []
     [ tr []
-      [ th [] [text "Start"]
+      [ th [] [text "Label"]
+      , th [] [text "Start"]
       , th [] [text "Finish"]
       , th [] [text "Average"]
       ]
     ]
 
-tblRow : Int -> (Time, Time) -> Html
-tblRow ops (start, finish) =
+tblRow : Int -> String -> (Time, Time) -> Html
+tblRow ops label (start, finish) =
   let
     avg = (finish - start) / (toFloat ops)
   in
     tr []
-      [ td [] [text (toString start)]
+      [ td [] [text label]
+      , td [] [text (toString start)]
       , td [] [text (toString finish)]
       , td [] [text ((toString avg) ++ "ms")]
       ]
