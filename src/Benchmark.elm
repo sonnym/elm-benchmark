@@ -19,7 +19,7 @@ benchmarkFmt ops labeledFns =
       (List.map2 (map2 (tblRow ops)) labels results)
 
 unify : (Maybe a -> b) -> (a -> Bool)
-unify fn = (\_ -> let _ = (Nothing |> fn) in True)
+unify fn = (\_ -> (always True (Nothing |> fn)))
 
 benchmark : Int -> List (a -> b) -> List (Signal (Time,Time))
 benchmark ops fns = List.map (timer ops) fns
