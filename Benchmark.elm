@@ -1,4 +1,4 @@
-module Benchmark(benchmark, benchmarkFmt, wrap) where
+module Benchmark(benchmark, benchmarkFmt, unify) where
 
 import List
 import List ((::))
@@ -18,8 +18,8 @@ benchmarkFmt ops labeledFns =
       (\rows -> table [] [tblHead, tbody [] rows])
       (List.map2 (map2 (tblRow ops)) labels results)
 
-wrap : (Maybe a -> b) -> (a -> Bool)
-wrap fn = (\_ -> let _ = (Nothing |> fn) in True)
+unify : (Maybe a -> b) -> (a -> Bool)
+unify fn = (\_ -> let _ = (Nothing |> fn) in True)
 
 benchmark : Int -> List (a -> b) -> List (Signal (Time,Time))
 benchmark ops fns = List.map (timer ops) fns
@@ -32,7 +32,7 @@ timer ops fn =
 
 runFn : Int -> (a -> b) -> Signal Bool
 runFn ops fn =
-  map (wrap (\_ -> List.repeat ops fn)) (constant ())
+  map (unify (\_ -> List.repeat ops fn)) (constant ())
 
 tblHead : Html
 tblHead =
