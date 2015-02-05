@@ -1,11 +1,12 @@
 import Benchmark (benchmarkFmt, unify)
 
+import Array
+import List ((::))
 import Signal (Signal, map)
 
-import Graphics.Element (Element)
-
-import Graphics.Collage as C
-import Graphics.Element as E
+import Color (white)
+import Graphics.Collage (..)
+import Graphics.Element (..)
 
 import Html (toElement)
 
@@ -14,7 +15,17 @@ main =
   map
     (toElement 500 500)
     (benchmarkFmt 10000
-      [ ("identity", unify identity)
-      , ("multiplication", unify (\_ -> 2 * 2))
-      , ("E.empty |> C.toForm", unify (\_ -> E.empty |> C.toForm))
+      [ ("2d Array -> List Form", unify (\_ ->
+          let
+            grid = Array.repeat 720 (Array.repeat 480 white)
+            lst = []
+            _ = Array.indexedMap (\x col ->
+                  Array.indexedMap (\y color ->
+                    (square 1
+                      |> filled color
+                      |> move (-(toFloat 720 / 2) + toFloat x, (toFloat 480 / 2) - toFloat y))
+                    :: lst)
+                  col)
+                grid
+          in lst))
       ])
