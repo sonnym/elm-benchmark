@@ -1,4 +1,4 @@
 Elm-Benchmark
 =============
 
-Compare the time it takes to run functions!
+N.B: The method herein does not work. See https://github.com/michaelbjames/elm-benchmark for a working implementation.
